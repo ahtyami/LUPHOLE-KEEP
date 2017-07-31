@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title></title>
+  <!-- Angular Material requires Angular.js Libraries -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+
+<!-- Angular Material Library -->
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <style>
+    h2, h3{text-align: center;color: rgb(16,108,200);}
+  </style>
+</head>
+<body ng-app="mainApp" data-ng-controller="CRUDController">
+  <h2>Luphole Task</h2>
+  <div layout="column">
+    <div layout="row" layout-xs="column" layout-align="center">
+      <div layout="column" flex="40" flex-xs="100" md-whiteframe="3">
+        <form Contenido="userForm" flex>
+          <div layout="column">
+            <md-input-container>
+              <label>Titulo</label>
+              <input ng-model="NotaModel.Titulo">
+            </md-input-container>
+            <md-input-container>
+              <label>Escribir nota</label>
+              <textarea ng-model="NotaModel.Contenido"></textarea>
+            </md-input-container>
+          </div>
+        </form>
+        <md-button flex data-ng-click="AddData()">Crear</md-button>
+      </div>
+    </div>
+    <div layout="row" layout-align="center center">
+      <md-input-container  style="width: 250px;">
+        <label>Buscar</label>
+        <input ng-model="searchKeyword">
+      </md-input-container>
+    </div>
+    <div layout="row" layout-align="center">
+      <div layout="row" layout-wrap flex="90" layout-align="center">
+        <md-card data-ng-click="openDialog($event); BindSelectedData(Note)" data-ng-repeat="Note in NotaArray | filter: searchKeyword " md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch flex="none"  ng-style="{'background-color':Headercolor}">
+          <md-card-title>
+            <md-card-title-text>
+              <span class="md-headline">{{ Note.Titulo }}</span>
+              <span class="md-subhead">{{ Note.Contenido }}</span>
+            </md-card-title-text>
+          </md-card-title>
+          <md-card-actions layout="row" layout-align="end center"  ng-cloak>
+            <md-fab-speed-dial md-direction="right" class="md-fling" md-open="false" ng-click="$event.stopImmediatePropagation()">
+             <md-fab-trigger>
+               <md-button aria-label="menu" class="md-fab md-primary">
+                 <md-tooltip md-direction="top">Cambiar color</md-tooltip>
+                 <md-icon aria-label="Cambiar-color" class="material-icons">palette</md-icon>
+               </md-button>
+             </md-fab-trigger>
+             <md-fab-actions>
+               <md-button aria-label="verde" class="md-fab md-raised md-mini" ng-click="Headercolor='MediumAquaMarine'" style="background-color:MediumAquaMarine">
+                 <md-tooltip md-direction="left">Verde</md-tooltip>
+               </md-button>
+
+               <md-button aria-label="amarillo" class="md-fab md-raised md-mini" ng-click="Headercolor='LemonChiffon'" style="background-color:LemonChiffon">
+                 <md-tooltip md-direction="right">Amarillo</md-tooltip>
+               </md-button>
+
+               <md-button aria-label="rojo" class="md-fab md-raised md-mini rojo" ng-click="Headercolor='Salmon'" style="background-color:Salmon">
+                 <md-tooltip md-direction="left">Rojo</md-tooltip>
+               </md-button>
+             </md-fab-actions>
+           </md-fab-speed-dial>
+            <md-button data-ng-click="DeleteData(Note)">Borrar</md-button>
+          </md-card-actions>
+        </md-card>
+      </div>
+    </div>
+  </div>
+
+
+    <script type="text/javascript">
+        var app = angular.module("mainApp", ['ngMaterial']);
+        app.controller('CRUDController', function ($scope, $mdDialog) {
+            $scope.NotaModel = {
+              Id: 0,
+              Titulo: '',
+              Contenido: '',
+            };
+            $scope.NotaModelE = {
+              Id: 0,
+              Titulo: '',
+              Contenido: '',
+            };
+
+            $scope.NotaArray = [];
+            $scope.AddData = function () {
+              var nota = {
+                  Id: $scope.NotaArray.length + 1,
+                  Contenido: $scope.NotaModel.Contenido,
+                  Titulo: $scope.NotaModel.Titulo
+              };
+              $scope.NotaArray.push(nota);
+              ClearModel();
+            }
+
+            $scope.DeleteData = function (note) {
+              var _index = $scope.NotaArray.indexOf(note);
+              $scope.NotaArray.splice(_index, 1);
+            }
+
+            $scope.BindSelectedData = function (note) {
+              $scope.NotaModelE.Id = note.Id;
+              $scope.NotaModelE.Contenido = note.Contenido;
+              $scope.NotaModelE.Titulo = note.Titulo;
+            }
+
+            $scope.UpdateData = function () {
+              $.grep($scope.NotaArray, function (e) {
+                  if (e.Id == $scope.NotaModelE.Id) {
+                      e.Contenido = $scope.NotaModelE.Contenido;
+                      e.Titulo = $scope.NotaModelE.Titulo;
+                  }
+              });
+              ClearModel();
+            }
+
+            $scope.openDialog = function(ev) {
+              $mdDialog.show({
+                controller: DialogController,
+                scope: $scope,
+                preserveScope: true,
+                template:'<md-dialog flex="50" flex-xs="90" layout-padding>' +
+                            '<md-dialog-content>' +
+                            '<form Contenido="userForm" flex="90">' +
+                            '<div layout="column">' +
+                              '<md-input-container>' +
+                                '<label>Titulo:</label>' +
+                                '<input ng-model="NotaModelE.Titulo">' +
+                              '</md-input-container>' +
+                              '<md-input-container>' +
+                                '<label>Contenido</label>' +
+                                '<textarea ng-model="NotaModelE.Contenido"></textarea>' +
+                              '</md-input-container>' +
+                            '</div>' +
+                          '</form>' +
+                          '</md-dialog-content>' +
+                          '<md-dialog-actions>' +
+                          '<md-button flex data-ng-click="UpdateData(); closeDialog()">Actualizar</md-button>' +
+                          '</md-dialog-actions>' +
+                          '</md-dialog>',
+                // parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+              });
+
+           	  function DialogController($scope, $mdDialog) {
+           	    $scope.closeDialog = function() {
+           	      $mdDialog.hide();
+           	    };
+           	  };
+            };
+
+            function ClearModel() {
+                // $scope.NotaModel.Id = 0;
+                $scope.NotaModel.Contenido = '';
+                $scope.NotaModel.Titulo = '';
+            }
+        });
+    </script>
+</body>
+
+</html>
