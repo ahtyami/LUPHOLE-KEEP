@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
   <title></title>
-  <!-- Angular Material requires Angular.js Libraries -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-
-
-<!-- Angular Material Library -->
 <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
   <style>
@@ -85,7 +80,7 @@
 
     <script type="text/javascript">
         var app = angular.module("mainApp", ['ngMaterial']);
-        app.controller('CRUDController', function ($scope, $mdDialog) {
+        app.controller('notaController', function ($scope, $mdDialog) {
             $scope.NotaModel = {
               Id: 0,
               Titulo: '',
@@ -153,10 +148,9 @@
                           '<md-button flex data-ng-click="UpdateData(); closeDialog()">Actualizar</md-button>' +
                           '</md-dialog-actions>' +
                           '</md-dialog>',
-                // parent: angular.element(document.body),
                 targetEvent: ev,
                 clickOutsideToClose:true,
-                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+                fullscreen: $scope.customFullscreen
               });
 
            	  function DialogController($scope, $mdDialog) {
@@ -167,7 +161,7 @@
             };
 
             function ClearModel() {
-                // $scope.NotaModel.Id = 0;
+                $scope.NotaModel.Id = 0;
                 $scope.NotaModel.Contenido = '';
                 $scope.NotaModel.Titulo = '';
             }
